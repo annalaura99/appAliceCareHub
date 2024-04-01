@@ -1,20 +1,37 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import 'react-native-gesture-handler';
+import React, { useEffect, useState, useRef } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { LoginScreen, HomeScreen, RegistrationScreen } from './src/screens';
+import { decode, encode } from 'base-64';
+import database from '@react-native-firebase/database';
+import Chat from './Chat';
+import Chats from './Chats';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+if (!global.btoa) { 
+  global.btoa = encode;
+}
+if (!global.atob) { 
+  global.atob = decode;
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const Stack = createStackNavigator();
+
+export default function App() {
+  const messagesWrapperRef = useRef();
+  const [user, setUser] = useState({});
+  const [messages, setMessages] = useState([]);
+  const chatRef = database().ref('/applications/17/chat');
+  const messageRef = database().ref('/applications/3/chat/messages');
+
+  // Restante do seu código aqui
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Chats" component={Chats} />
+        <Stack.Screen name="Chat" component={Chat} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
